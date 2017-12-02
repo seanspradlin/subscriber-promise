@@ -1,8 +1,10 @@
 {
   "plugins": {
-    "node": {}
+    "node": {},
+    "mocha": {}
   },
   "libs": [
+    "express"
   ],
   "ecmaVersion": 6
 }
