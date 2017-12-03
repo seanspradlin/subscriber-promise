@@ -30,7 +30,8 @@ class Client {
 
     this.emitter.on('response', (response) => {
       if (this.store[response.id]) {
-        this.store[response.id](response);
+        clearTimeout(this.store[response.id].timeout);
+        this.store[response.id].resolve(response);
         delete this.store[response.id];
       }
     });
@@ -48,11 +49,11 @@ class Client {
     this.emitter.push(message);
 
     return new Promise((resolve, reject) => {
-      this.store[message.id] = resolve;
-      setTimeout(() => {
-        delete this.store[message.id];
+      const timeout = setTimeout(() => {
         reject(new Error('response timed out'));
+        delete this.store[message.id];
       }, this.ttl);
+      this.store[message.id] = { resolve, timeout };
     });
   }
 }
